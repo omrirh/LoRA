@@ -13,7 +13,6 @@ fsspec==2024.6.1
 huggingface-hub==0.24.7
 idna==3.10
 Jinja2==3.1.4
--e git+ssh://git@github.com/omrirh/LoRA.git@ed15219981f9d01d4295d9ad6d68b9a31b4409b1#egg=loralib
 MarkupSafe==2.1.5
 mpmath==1.3.0
 multidict==6.1.0
