@@ -4,10 +4,11 @@ FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
 # Set the working directory
 WORKDIR /LoRA
 
-# Install Python and pip
+# Install Python, pip, and git
 RUN apt-get update && apt-get install -y \
     python3 \
-    python3-pip
+    python3-pip \
+    git
 
 # Copy the repository into the container
 COPY . .
