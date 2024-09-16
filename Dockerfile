@@ -13,5 +13,5 @@ RUN pip3 install -r requirements.txt
 # Ensure proper permissions on the working directory
 RUN chmod -R 777 /LoRA
 
-# Run the main script
-CMD ["/bin/bash", "-c", "python", "run_lora_experiment.py"]
+# Run the main script using Python
+CMD ["python3", "run_lora_experiment.py"]
