@@ -4,6 +4,11 @@ FROM nvidia/cuda:11.3.1-cudnn8-runtime-ubuntu20.04
 # Set the working directory
 WORKDIR /LoRA
 
+# Install Python and pip
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip
+
 # Copy the repository into the container
 COPY . .
 
@@ -13,5 +18,5 @@ RUN pip3 install -r requirements.txt
 # Ensure proper permissions on the working directory
 RUN chmod -R 777 /LoRA
 
-# Run the main script using Python
+# Run the main script
 CMD ["python3", "run_lora_experiment.py"]
