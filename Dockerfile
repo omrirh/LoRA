@@ -8,10 +8,10 @@ RUN apt-get update && apt-get install -y \
     git
 
 COPY requirements.txt .
-COPY run_lora_sst2_roberta_base_experiment.py .
+COPY run_lora_sst2_bert_base_experiment.py .
 
 RUN pip3 install -r requirements.txt
 
 RUN chmod -R 777 /LoRA
 
-CMD ["python3", "run_lora_sst2_roberta_base_experiment.py"]
+CMD ["python3", "run_lora_sst2_bert_base_experiment.py"]

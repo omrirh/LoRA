@@ -6,7 +6,7 @@ from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 import evaluate
 
-MODEL_NAME: str = "bert-base-uncased"
+MODEL_NAME: str = "bert-base-uncased"  # TODO: scale the experiment to RoBERTa with sufficient GPU resources
 GLUE_TASK_NAME: str = "sst2"
 
 
