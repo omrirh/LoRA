@@ -6,17 +6,16 @@ from peft import LoraConfig, get_peft_model
 import evaluate
 
 MODEL_NAME: str = "roberta-base"
+GLUE_TASK_NAME: str = "sst2"
 
 
-def load_glue_data(task_name: str = "sst2"):
+def load_glue_data(task_name: str = GLUE_TASK_NAME):
     dataset = load_dataset("glue", task_name)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     def tokenize_function(examples):
-        # Return input_ids and attention_mask from the tokenizer
         return tokenizer(examples["sentence"], padding="max_length", truncation=True, return_tensors="pt")
 
-    # Map the tokenizer function to the dataset
     tokenized_datasets = dataset.map(tokenize_function, batched=True)
     tokenized_datasets.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
 
@@ -70,7 +69,7 @@ def train_model(model: torch.nn.Module, tokenized_datasets) -> Trainer:
 
 
 def main():
-    tokenized_datasets = load_glue_data("sst2")
+    tokenized_datasets = load_glue_data(GLUE_TASK_NAME)
     model = initialize_lora_model()
 
     trainer = train_model(model, tokenized_datasets)
