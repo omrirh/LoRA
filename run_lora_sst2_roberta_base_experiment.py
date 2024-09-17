@@ -1,19 +1,20 @@
 import torch
 import numpy as np
+from typing import Dict, Any
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 import evaluate
 
-MODEL_NAME: str = "roberta-base"
+MODEL_NAME: str = "bert-base-uncased"
 GLUE_TASK_NAME: str = "sst2"
 
 
-def load_glue_data(task_name: str = GLUE_TASK_NAME):
+def load_glue_data(task_name: str = GLUE_TASK_NAME) -> Any:
     dataset = load_dataset("glue", task_name)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-    def tokenize_function(examples):
+    def tokenize_function(examples: Dict[str, Any]) -> Dict[str, Any]:
         return tokenizer(examples["sentence"], padding="max_length", truncation=True, return_tensors="pt")
 
     tokenized_datasets = dataset.map(tokenize_function, batched=True)
@@ -37,8 +38,11 @@ def initialize_lora_model() -> torch.nn.Module:
     return peft_model
 
 
-def train_model(model: torch.nn.Module, tokenized_datasets) -> Trainer:
-    def compute_metrics(eval_pred):
+def train_model(
+    model: torch.nn.Module,
+    tokenized_datasets: Any
+) -> Trainer:
+    def compute_metrics(eval_pred: Any) -> Dict[str, float]:
         metric = evaluate.load("accuracy")
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
@@ -68,7 +72,7 @@ def train_model(model: torch.nn.Module, tokenized_datasets) -> Trainer:
     return trainer
 
 
-def main():
+def main() -> None:
     tokenized_datasets = load_glue_data(GLUE_TASK_NAME)
     model = initialize_lora_model()
 
