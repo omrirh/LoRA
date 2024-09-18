@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from typing import Dict, Any
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, IntervalStrategy
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 import evaluate
@@ -50,13 +50,10 @@ def train_model(
         print(f"Accuracy: {result['accuracy']}")
         return result
 
-    epoch_str: str = "epoch"
-
     training_args = TrainingArguments(
         output_dir="./results",
         do_train=True,
         do_eval=True,
-        eval_strategy=epoch_str,
         logging_dir='./logs',
         logging_steps=500,
         learning_rate=5e-4,
@@ -66,7 +63,9 @@ def train_model(
         weight_decay=0.01,
         seed=42,
         save_steps=500,
-        evaluation_strategy=epoch_str,
+        evaluation_strategy=IntervalStrategy.EPOCH,
+        logging_strategy=IntervalStrategy.STEPS,
+        save_strategy=IntervalStrategy.STEPS
     )
 
     trainer = Trainer(
