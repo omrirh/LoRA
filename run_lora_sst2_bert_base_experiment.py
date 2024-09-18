@@ -1,10 +1,9 @@
 import torch
 import numpy as np
 from typing import Dict, Any
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, TrainerCallback
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
-from copy import deepcopy
 import evaluate
 
 MODEL_NAME: str = "bert-base-uncased"
@@ -39,18 +38,6 @@ def initialize_lora_model() -> torch.nn.Module:
     return peft_model
 
 
-class CustomCallback(TrainerCallback):
-    def __init__(self, trainer) -> None:
-        super().__init__()
-        self._trainer = trainer
-
-    def on_epoch_end(self, args, state, control, **kwargs):
-        if control.should_evaluate:
-            control_copy = deepcopy(control)
-            self._trainer.evaluate(eval_dataset=self._trainer.train_dataset, metric_key_prefix="train")
-            return control_copy
-
-
 def train_model(
     model: torch.nn.Module,
     tokenized_datasets: Any
@@ -59,12 +46,13 @@ def train_model(
         metric = evaluate.load("accuracy")
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
-        return metric.compute(predictions=predictions, references=labels)
+        result = metric.compute(predictions=predictions, references=labels)
+        print(f"Accuracy: {result['accuracy']}")
+        return result
 
     training_args = TrainingArguments(
         output_dir="./results",
         eval_strategy="epoch",
-        eval_steps=500,
         logging_dir='./logs',
         logging_steps=500,
         learning_rate=5e-4,
@@ -84,7 +72,6 @@ def train_model(
         compute_metrics=compute_metrics
     )
 
-    trainer.add_callback(CustomCallback(trainer))
     trainer.train()
 
     return trainer
@@ -97,7 +84,7 @@ def main() -> None:
     trainer = train_model(model, tokenized_datasets)
     eval_results = trainer.evaluate()
 
-    print(f"Evaluation results: {eval_results}")
+    print(f"Final evaluation results: {eval_results}")
 
 
 if __name__ == "__main__":
