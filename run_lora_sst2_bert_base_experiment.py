@@ -2,9 +2,8 @@ import torch
 import numpy as np
 from typing import Dict, Any
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
-from datasets import load_dataset
+from datasets import load_dataset, load_metric
 from peft import LoraConfig, get_peft_model
-import evaluate
 
 MODEL_NAME: str = "bert-base-uncased"  # TODO: scale the experiment to RoBERTa with sufficient GPU resources
 GLUE_TASK_NAME: str = "sst2"
@@ -43,7 +42,7 @@ def train_model(
     tokenized_datasets: Any
 ) -> Trainer:
     def compute_metrics(eval_pred: Any) -> Dict[str, float]:
-        metric = evaluate.load("accuracy")
+        metric = load_metric('accuracy')
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
         return metric.compute(predictions=predictions, references=labels)
