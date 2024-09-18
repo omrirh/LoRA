@@ -6,7 +6,7 @@ from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
 import evaluate
 
-MODEL_NAME: str = "bert-base-uncased"
+MODEL_NAME: str = "bert-base-uncased"  # TODO: scale to RoBERTa to reproduce SOTA on SST2 (95.1%)
 GLUE_TASK_NAME: str = "sst2"
 
 
@@ -24,7 +24,7 @@ def load_glue_data(task_name: str = GLUE_TASK_NAME) -> Any:
 
 
 def initialize_lora_model() -> torch.nn.Module:
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
+    model = AutoModelForSequenceClassification.from_pretrained(pretrained_model_name_or_path=MODEL_NAME, num_labels=2)
 
     lora_config = LoraConfig(
         r=16,
@@ -33,7 +33,7 @@ def initialize_lora_model() -> torch.nn.Module:
         lora_dropout=0.05
     )
 
-    peft_model = get_peft_model(model, lora_config)
+    peft_model = get_peft_model(model=model, peft_config=lora_config)
 
     return peft_model
 
@@ -50,9 +50,13 @@ def train_model(
         print(f"Accuracy: {result['accuracy']}")
         return result
 
+    epoch_str: str = "epoch"
+
     training_args = TrainingArguments(
         output_dir="./results",
-        eval_strategy="epoch",
+        do_train=True,
+        do_eval=True,
+        eval_strategy=epoch_str,
         logging_dir='./logs',
         logging_steps=500,
         learning_rate=5e-4,
@@ -61,7 +65,8 @@ def train_model(
         num_train_epochs=3,
         weight_decay=0.01,
         seed=42,
-        save_steps=500
+        save_steps=500,
+        evaluation_strategy=epoch_str,
     )
 
     trainer = Trainer(
@@ -78,10 +83,10 @@ def train_model(
 
 
 def main() -> None:
-    tokenized_datasets = load_glue_data(GLUE_TASK_NAME)
+    tokenized_datasets = load_glue_data(task_name=GLUE_TASK_NAME)
     model = initialize_lora_model()
 
-    trainer = train_model(model, tokenized_datasets)
+    trainer = train_model(model=model, tokenized_datasets=tokenized_datasets)
     eval_results = trainer.evaluate()
 
     print(f"Final evaluation results: {eval_results}")
