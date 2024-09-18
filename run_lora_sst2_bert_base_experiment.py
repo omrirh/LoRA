@@ -1,11 +1,13 @@
 import torch
 import numpy as np
 from typing import Dict, Any
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
-from datasets import load_dataset, load_metric
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, TrainerCallback
+from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
+from copy import deepcopy
+import evaluate
 
-MODEL_NAME: str = "bert-base-uncased"  # TODO: scale the experiment to RoBERTa with sufficient GPU resources
+MODEL_NAME: str = "bert-base-uncased"
 GLUE_TASK_NAME: str = "sst2"
 
 
@@ -37,19 +39,31 @@ def initialize_lora_model() -> torch.nn.Module:
     return peft_model
 
 
+class CustomCallback(TrainerCallback):
+    def __init__(self, trainer) -> None:
+        super().__init__()
+        self._trainer = trainer
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        if control.should_evaluate:
+            control_copy = deepcopy(control)
+            self._trainer.evaluate(eval_dataset=self._trainer.train_dataset, metric_key_prefix="train")
+            return control_copy
+
+
 def train_model(
     model: torch.nn.Module,
     tokenized_datasets: Any
 ) -> Trainer:
     def compute_metrics(eval_pred: Any) -> Dict[str, float]:
-        metric = load_metric('accuracy')
+        metric = evaluate.load("accuracy")
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
         return metric.compute(predictions=predictions, references=labels)
 
     training_args = TrainingArguments(
         output_dir="./results",
-        eval_strategy="steps",
+        eval_strategy="epoch",
         eval_steps=500,
         logging_dir='./logs',
         logging_steps=500,
@@ -70,6 +84,7 @@ def train_model(
         compute_metrics=compute_metrics
     )
 
+    trainer.add_callback(CustomCallback(trainer))
     trainer.train()
 
     return trainer
