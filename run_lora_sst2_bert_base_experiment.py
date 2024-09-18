@@ -50,13 +50,17 @@ def train_model(
 
     training_args = TrainingArguments(
         output_dir="./results",
-        evaluation_strategy="epoch",
+        eval_strategy="steps",
+        eval_steps=500,
+        logging_dir='./logs',
+        logging_steps=500,
         learning_rate=5e-4,
         per_device_train_batch_size=32,
         per_device_eval_batch_size=32,
         num_train_epochs=3,
         weight_decay=0.01,
-        seed=42
+        seed=42,
+        save_steps=500
     )
 
     trainer = Trainer(

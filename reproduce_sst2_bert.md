@@ -12,5 +12,5 @@
 make setup-run
 ```
 
-### After the training & evaluation phases are completed, you should see the session artifacts under `results` under the project path.
+#### Once the experiment is completed, you should see the artifacts under `/mnt/results` and `/mnt/logs` paths.
 
