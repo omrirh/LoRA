@@ -43,3 +43,4 @@ tzdata==2024.1
 urllib3==2.2.3
 xxhash==3.5.0
 yarl==1.11.1
+scipy==1.10.1
