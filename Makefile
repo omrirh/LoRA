@@ -1,7 +1,6 @@
 IMAGE_NAME = lora-bert-base-sst2-experiment
 DOCKERFILE = Dockerfile
 HOST_RESULTS_DIR = /mnt/results
-HOST_LOGS_DIR = /mnt/logs
 
 build:
 	@echo "Building Docker image: $(IMAGE_NAME)..."
@@ -17,7 +16,7 @@ setup-gpu:
 
 experiment:
 	@echo "Running the Docker container with GPU utilization..."
-	docker run --gpus all -it -v $(HOST_RESULTS_DIR):/LoRA/results -v $(HOST_LOGS_DIR):/LoRA/logs $(IMAGE_NAME)
+	docker run --gpus all -it -v $(HOST_RESULTS_DIR):/LoRA/results $(IMAGE_NAME)
 
 setup-run:
 	make setup-gpu
