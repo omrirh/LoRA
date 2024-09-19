@@ -9,14 +9,51 @@
   "is_world_process_zero": true,
   "log_history": [
     {
+      "epoch": 0.047505938242280284,
+      "grad_norm": 0.9697763919830322,
+      "learning_rate": 0.0004920823436262866,
+      "loss": 0.4725,
+      "step": 100
+    },
+    {
+      "epoch": 0.09501187648456057,
+      "grad_norm": 1.3676081895828247,
+      "learning_rate": 0.00048416468725257325,
+      "loss": 0.315,
+      "step": 200
+    },
+    {
+      "epoch": 0.14251781472684086,
+      "grad_norm": 0.8948991298675537,
+      "learning_rate": 0.00047624703087885986,
+      "loss": 0.3188,
+      "step": 300
+    },
+    {
+      "epoch": 0.19002375296912113,
+      "grad_norm": 0.749424397945404,
+      "learning_rate": 0.00046832937450514653,
+      "loss": 0.2701,
+      "step": 400
+    },
+    {
       "epoch": 0.2375296912114014,
-      "grad_norm": 1.9942615032196045,
+      "grad_norm": 1.8681199550628662,
       "learning_rate": 0.0004604117181314331,
-      "loss": 0.3468,
+      "loss": 0.2982,
+      "step": 500
+    },
+    {
+      "epoch": 0.2375296912114014,
+      "eval_accuracy": 0.908256880733945,
+      "eval_loss": 0.24132825434207916,
+      "eval_runtime": 23.7242,
+      "eval_samples_per_second": 36.756,
+      "eval_steps_per_second": 1.18,
       "step": 500
     }
   ],
-  "logging_steps": 500,
+  "logging_steps": 100,
   "max_steps": 6315,
   "num_input_tokens_seen": 0,
   "num_train_epochs": 3,
