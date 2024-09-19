@@ -50,20 +50,26 @@ def train_model(
         print(f"Accuracy: {result['accuracy']}")
         return result
 
+    num_steps: int = 500
+    batch_size: int = 32
+
     training_args = TrainingArguments(
+        label_names=["label"],
         output_dir="./results",
         do_train=True,
         do_eval=True,
         logging_dir='./logs',
-        logging_steps=500,
+        logging_steps=100,
         learning_rate=5e-4,
-        per_device_train_batch_size=32,
-        per_device_eval_batch_size=32,
+        per_device_train_batch_size=batch_size,
+        per_device_eval_batch_size=batch_size,
+        remove_unused_columns=False,
         num_train_epochs=3,
         weight_decay=0.01,
         seed=42,
-        save_steps=500,
-        evaluation_strategy=IntervalStrategy.EPOCH,
+        save_steps=num_steps,
+        eval_steps=num_steps,
+        evaluation_strategy=IntervalStrategy.STEPS,
         logging_strategy=IntervalStrategy.STEPS,
         save_strategy=IntervalStrategy.STEPS
     )
