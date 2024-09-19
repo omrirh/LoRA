@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 COPY run_lora_sst2_bert_base_experiment.py .
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt && pip3 install scikit-learn
 
 RUN chmod -R 777 /LoRA
 
