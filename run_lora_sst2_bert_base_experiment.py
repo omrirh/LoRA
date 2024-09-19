@@ -54,7 +54,7 @@ def train_model(
     batch_size: int = 32
 
     training_args = TrainingArguments(
-        label_names=["label"],
+        label_names=["labels"],
         output_dir="./results",
         do_train=True,
         do_eval=True,
