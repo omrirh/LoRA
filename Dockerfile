@@ -17,4 +17,4 @@ RUN pip3 install --no-cache-dir scikit-learn==1.3.2
 
 RUN chmod -R 777 /LoRA
 
-CMD ["python3", "run_lora_sst2_bert_base_experiment.py"]
+CMD ["python3", "run_lora_sst2_roberta_base_experiment.py"]
