@@ -1,4 +1,4 @@
-IMAGE_NAME = lora-bert-base-sst2-experiment
+IMAGE_NAME = lora-roberta-base-sst2-experiment
 DOCKERFILE = Dockerfile
 HOST_RESULTS_DIR = /mnt/results
 
