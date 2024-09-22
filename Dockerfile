@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     git
 
 COPY requirements.txt .
-COPY run_lora_sst2_bert_base_experiment.py .
+COPY run_lora_sst2_roberta_base_experiment.py .
 
 RUN pip3 install --upgrade pip setuptools wheel
 RUN pip3 install --no-cache-dir -r requirements.txt
